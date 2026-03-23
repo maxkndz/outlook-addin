@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SR Standards</title>
+  <title>S.R Standards</title>
 
   <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
   <script src="./taskpane.js"></script>
@@ -13,25 +13,27 @@
     body {
       margin: 0;
       padding: 16px;
-      font-family: Arial, sans-serif;
-      font-size: 14px;
+      font-family: Calibri, Arial, sans-serif;
+      font-size: 11pt;
       background: #ffffff;
       color: #222222;
     }
 
     h2 {
       margin: 0 0 16px 0;
-      font-size: 18px;
-    }
-
-    .section {
-      margin-bottom: 16px;
+      font-size: 16pt;
     }
 
     .hint {
       margin-bottom: 16px;
       color: #666666;
       line-height: 1.4;
+    }
+
+    .section-title {
+      margin: 18px 0 8px 0;
+      font-weight: bold;
+      font-size: 11pt;
     }
 
     button {
@@ -44,7 +46,8 @@
       background: #f7f7f7;
       cursor: pointer;
       text-align: left;
-      font-size: 14px;
+      font-size: 11pt;
+      font-family: Calibri, Arial, sans-serif;
     }
 
     button:hover {
@@ -52,27 +55,28 @@
     }
 
     .status {
-      margin-top: 12px;
+      margin-top: 14px;
       padding: 10px 12px;
       border-radius: 6px;
       background: #f3f3f3;
       color: #444444;
       min-height: 20px;
+      font-size: 11pt;
     }
   </style>
 </head>
 <body>
-  <h2>SR Standards</h2>
+  <h2>S.R Standards</h2>
 
   <div class="hint">
-    Standardtext auswählen. Der Text wird oben in die aktuelle E-Mail eingefügt.
+    Bitte Vorlage auswählen. Der Text wird in die aktuell geöffnete E-Mail eingefügt.
   </div>
 
-  <div class="section">
-    <button id="btnStatusbericht" type="button">Statusbericht</button>
-    <button id="btnProtokoll" type="button">Protokollversand</button>
-    <button id="btnTermin" type="button">Terminbestätigung</button>
-  </div>
+  <div class="section-title">Gewerkerechnungen</div>
+  <button id="btnRechnung" type="button">Rückgabe Gewerkerechnung</button>
+
+  <div class="section-title">Gewerkenachträge</div>
+  <button id="btnNachtrag" type="button">Rückgabe Gewerkenachtrag</button>
 
   <div id="status" class="status">Bereit.</div>
 </body>
