@@ -63,6 +63,16 @@
       flex: 0 0 auto;
     }
 
+    input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 10px;
+      border: 1px solid #d0d0d0;
+      border-radius: 4px;
+      font-family: Calibri, Arial, sans-serif;
+      font-size: 11pt;
+    }
+
     label {
       line-height: 1.35;
       cursor: pointer;
@@ -124,86 +134,90 @@
     </div>
   </div>
 
+  <div class="section-title">Betreff</div>
+  <div class="option-box">
+    <div class="checkbox-row">
+      <input type="checkbox" id="useSubject">
+      <label for="useSubject">Betreff automatisch setzen</label>
+    </div>
+
+    <div class="checkbox-row">
+      <input type="text" id="proj" placeholder="Projektkürzel">
+    </div>
+
+    <div class="checkbox-row">
+      <input type="text" id="verg" placeholder="Vergabenummer">
+    </div>
+
+    <div class="checkbox-row">
+      <input type="text" id="auftr" placeholder="Auftragnehmer">
+    </div>
+  </div>
+
   <div id="rechnungSection">
-    <div class="section-title">Gründe – Gewerkerechnung</div>
+    <div class="section-title">Prüfpunkte – Gewerkerechnung</div>
     <div class="option-box">
       <div class="checkbox-row">
         <input type="checkbox" id="r1">
-        <label for="r1">Fehlende Nachweise / Anlagen</label>
+        <label for="r1">Nachweise / Anlagen</label>
       </div>
       <div class="checkbox-row">
         <input type="checkbox" id="r2">
-        <label for="r2">Nicht nachvollziehbare Nachweise / Anlagen</label>
+        <label for="r2">Einheitspreise LV / Auftrag</label>
       </div>
       <div class="checkbox-row">
         <input type="checkbox" id="r3">
-        <label for="r3">Abweichungen von den vereinbarten Einheitspreisen gemäß Leistungsverzeichnis / Auftrag</label>
+        <label for="r3">Beauftragte Leistungen</label>
       </div>
       <div class="checkbox-row">
         <input type="checkbox" id="r4">
-        <label for="r4">Abrechnung nicht beauftragter Leistungen</label>
+        <label for="r4">Rechnerische Richtigkeit</label>
       </div>
       <div class="checkbox-row">
         <input type="checkbox" id="r5">
-        <label for="r5">Rechnerische Fehler</label>
+        <label for="r5">Auftragssumme</label>
       </div>
       <div class="checkbox-row">
         <input type="checkbox" id="r6">
-        <label for="r6">Überschreitung der Auftragssumme</label>
-      </div>
-      <div class="checkbox-row">
-        <input type="checkbox" id="r7">
-        <label for="r7">Übertragungsfehler</label>
-      </div>
-      <div class="checkbox-row">
-        <input type="checkbox" id="r8">
-        <label for="r8">Falscher Stempel</label>
+        <label for="r6">Formale Angaben (Stempel)</label>
       </div>
     </div>
   </div>
 
   <div id="nachtragSection" class="hidden">
-    <div class="section-title">Gründe – Gewerkenachtrag</div>
+    <div class="section-title">Prüfpunkte – Gewerkenachtrag</div>
     <div class="option-box">
       <div class="checkbox-row">
         <input type="checkbox" id="n1">
-        <label for="n1">Fehlende Nachweise / Anlagen</label>
+        <label for="n1">Nachweise / Anlagen</label>
       </div>
       <div class="checkbox-row">
         <input type="checkbox" id="n2">
-        <label for="n2">Nicht nachvollziehbare Nachweise / Anlagen</label>
+        <label for="n2">Einheitspreise Vertrag</label>
       </div>
       <div class="checkbox-row">
         <input type="checkbox" id="n3">
-        <label for="n3">Abweichungen von den vereinbarten Einheitspreisen</label>
+        <label for="n3">Preisansätze</label>
       </div>
       <div class="checkbox-row">
         <input type="checkbox" id="n4">
-        <label for="n4">Unangemessene Preisansätze</label>
+        <label for="n4">Nachtragsbegründung</label>
       </div>
       <div class="checkbox-row">
         <input type="checkbox" id="n5">
-        <label for="n5">Fehlende Nachtragsbegründung / Unzureichende Nachtragsbegründung</label>
+        <label for="n5">Leistungsabgrenzung</label>
       </div>
       <div class="checkbox-row">
         <input type="checkbox" id="n6">
-        <label for="n6">Leistungen bereits beauftragt</label>
+        <label for="n6">Mengenansätze</label>
       </div>
       <div class="checkbox-row">
         <input type="checkbox" id="n7">
-        <label for="n7">Nicht nachvollziehbare Mengenansätze</label>
+        <label for="n7">Rechnerische Richtigkeit</label>
       </div>
       <div class="checkbox-row">
         <input type="checkbox" id="n8">
-        <label for="n8">Rechnerische Fehler</label>
-      </div>
-      <div class="checkbox-row">
-        <input type="checkbox" id="n9">
-        <label for="n9">Übertragungsfehler</label>
-      </div>
-      <div class="checkbox-row">
-        <input type="checkbox" id="n10">
-        <label for="n10">Falscher Stempel</label>
+        <label for="n8">Formale Angaben (Stempel)</label>
       </div>
     </div>
   </div>

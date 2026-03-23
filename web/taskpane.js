@@ -1,5 +1,25 @@
 /* global Office */
 
+const rechnungMap = {
+  r1: "Bitte prüfen Sie die Vollständigkeit und Nachvollziehbarkeit der Nachweise / Anlagen",
+  r2: "Bitte prüfen Sie die Übereinstimmung der abgerechneten Einheitspreise mit dem Leistungsverzeichnis / Auftrag",
+  r3: "Bitte prüfen Sie, ob ausschließlich beauftragte Leistungen abgerechnet wurden",
+  r4: "Bitte prüfen Sie die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
+  r5: "Bitte prüfen Sie die Einhaltung der vereinbarten Auftragssumme",
+  r6: "Bitte prüfen Sie die Vollständigkeit und Richtigkeit der formalen Angaben (z. B. Stempel)"
+};
+
+const nachtragMap = {
+  n1: "Bitte prüfen Sie die Vollständigkeit und Nachvollziehbarkeit der Nachweise / Anlagen",
+  n2: "Bitte prüfen Sie die Übereinstimmung der angesetzten Einheitspreise mit den vertraglichen Vereinbarungen",
+  n3: "Bitte prüfen Sie die Angemessenheit der Preisansätze",
+  n4: "Bitte prüfen Sie die Nachvollziehbarkeit der Nachtragsbegründung",
+  n5: "Bitte prüfen Sie, ob Leistungen bereits vom bestehenden Auftrag umfasst sind",
+  n6: "Bitte prüfen Sie die Herleitung und Nachvollziehbarkeit der Mengenansätze",
+  n7: "Bitte prüfen Sie die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
+  n8: "Bitte prüfen Sie die Vollständigkeit und Richtigkeit der formalen Angaben (z. B. Stempel)"
+};
+
 Office.onReady(() => {
   const typeRechnung = document.getElementById("typeRechnung");
   const typeNachtrag = document.getElementById("typeNachtrag");
@@ -34,11 +54,11 @@ function toggleSections() {
   const nachtragSection = document.getElementById("nachtragSection");
 
   if (isNachtrag) {
-    rechnungSection?.classList.add("hidden");
-    nachtragSection?.classList.remove("hidden");
+    if (rechnungSection) rechnungSection.classList.add("hidden");
+    if (nachtragSection) nachtragSection.classList.remove("hidden");
   } else {
-    nachtragSection?.classList.add("hidden");
-    rechnungSection?.classList.remove("hidden");
+    if (nachtragSection) nachtragSection.classList.add("hidden");
+    if (rechnungSection) rechnungSection.classList.remove("hidden");
   }
 }
 
@@ -49,26 +69,24 @@ function setStatus(message) {
   }
 }
 
-function getCheckedReasons(prefix, count) {
+function getCheckedMapped(map) {
   const reasons = [];
 
-  for (let i = 1; i <= count; i++) {
-    const checkbox = document.getElementById(`${prefix}${i}`);
-    const label = document.querySelector(`label[for="${prefix}${i}"]`);
-
-    if (checkbox && checkbox.checked && label) {
-      reasons.push(label.textContent.trim());
+  Object.keys(map).forEach((key) => {
+    const el = document.getElementById(key);
+    if (el && el.checked) {
+      reasons.push(map[key]);
     }
-  }
+  });
 
   return reasons;
 }
 
-function buildHtmlMail(greetingIntro, reasons, closingText) {
+function buildHtmlMail(intro, reasons, closing) {
   let html = "";
   html += "<p>Sehr geehrte Damen und Herren,</p>";
-  html += `<p>${greetingIntro}</p>`;
-  html += "<p>Im Einzelnen ergeben sich folgende Punkte:</p>";
+  html += `<p>${escapeHtml(intro)}</p>`;
+  html += "<p>Die durchgeführten Stichproben ergeben nachfolgenden Prüf- bzw. Überarbeitungsbedarf (ohne Anspruch auf Vollständigkeit):</p>";
   html += "<ul>";
 
   reasons.forEach((reason) => {
@@ -76,7 +94,7 @@ function buildHtmlMail(greetingIntro, reasons, closingText) {
   });
 
   html += "</ul>";
-  html += `<p>${closingText}</p>`;
+  html += `<p>${escapeHtml(closing)}</p>`;
   html += "<p>Für Rückfragen stehen wir gerne zur Verfügung.</p>";
 
   return html;
@@ -89,37 +107,53 @@ function escapeHtml(text) {
     .replaceAll(">", "&gt;");
 }
 
+function buildSubject(type) {
+  const useSubject = document.getElementById("useSubject")?.checked;
+  if (!useSubject) {
+    return null;
+  }
+
+  const projekt = (document.getElementById("proj")?.value || "").trim();
+  const vergabe = (document.getElementById("verg")?.value || "").trim();
+  const auftragnehmer = (document.getElementById("auftr")?.value || "").trim();
+  const suffix = type === "nachtrag" ? "Nachtrag XY" : "Rechnung XY";
+
+  return `${projekt} | ${vergabe} | ${auftragnehmer} | ${suffix}`;
+}
+
 function insertRechnung() {
-  const reasons = getCheckedReasons("r", 8);
+  const reasons = getCheckedMapped(rechnungMap);
 
   if (reasons.length === 0) {
-    setStatus("Bitte mindestens einen Grund auswählen.");
+    setStatus("Bitte mindestens einen Prüfpunkt auswählen.");
     return;
   }
 
-  const intro = "im Zuge der Plausibilitätsprüfung der eingereichten Rechnung ergeben sich Unstimmigkeiten, die eine Überprüfung bzw. Freigabe derzeit nicht ermöglichen.";
-  const closing = "Wir bitten Sie, die genannten Punkte zu prüfen, die Unterlage(n) entsprechend zu überarbeiten und erneut vorzulegen.";
-
+  const intro = "im Zuge der Plausibilitätsprüfung der eingereichten Rechnung ergeben sich Unstimmigkeiten, die eine Weitergabe an den Bauherrn und damit eine Freigabe derzeit nicht ermöglichen.";
+  const closing = "Wir bitten Sie, die genannten Punkte sowie darüber hinausgehende Aspekte entsprechend zu prüfen, die Unterlagen zu überarbeiten und erneut vorzulegen.";
+  const subject = buildSubject("rechnung");
   const html = buildHtmlMail(intro, reasons, closing);
-  insertTemplate(html);
+
+  insertTemplate(html, subject);
 }
 
 function insertNachtrag() {
-  const reasons = getCheckedReasons("n", 10);
+  const reasons = getCheckedMapped(nachtragMap);
 
   if (reasons.length === 0) {
-    setStatus("Bitte mindestens einen Grund auswählen.");
+    setStatus("Bitte mindestens einen Prüfpunkt auswählen.");
     return;
   }
 
-  const intro = "im Zuge der Plausibilitätsprüfung des eingereichten Nachtrags ergeben sich Unstimmigkeiten, die eine Überprüfung bzw. Freigabe derzeit nicht ermöglichen.";
-  const closing = "Wir bitten Sie, die genannten Punkte zu prüfen, die Unterlage(n) entsprechend zu überarbeiten und erneut vorzulegen.";
-
+  const intro = "im Zuge der Plausibilitätsprüfung des eingereichten Nachtrags ergeben sich Unstimmigkeiten, die eine Weitergabe an den Bauherrn und damit die Beauftragung derzeit nicht ermöglichen.";
+  const closing = "Wir bitten Sie, die genannten Punkte sowie darüber hinausgehende Aspekte entsprechend zu prüfen, die Unterlagen zu überarbeiten und erneut vorzulegen.";
+  const subject = buildSubject("nachtrag");
   const html = buildHtmlMail(intro, reasons, closing);
-  insertTemplate(html);
+
+  insertTemplate(html, subject);
 }
 
-function insertTemplate(htmlTemplate) {
+function insertTemplate(htmlTemplate, subjectText) {
   const item = Office.context.mailbox.item;
 
   if (!item || !item.body) {
@@ -130,11 +164,22 @@ function insertTemplate(htmlTemplate) {
   item.body.prependAsync(
     htmlTemplate,
     { coercionType: Office.CoercionType.Html },
-    (result) => {
-      if (result.status === Office.AsyncResultStatus.Succeeded) {
-        setStatus("Text eingefügt.");
-      } else {
+    (bodyResult) => {
+      if (bodyResult.status !== Office.AsyncResultStatus.Succeeded) {
         setStatus("Fehler beim Einfügen des Textes.");
+        return;
+      }
+
+      if (subjectText && item.subject) {
+        item.subject.setAsync(subjectText, (subjectResult) => {
+          if (subjectResult.status === Office.AsyncResultStatus.Succeeded) {
+            setStatus("Text eingefügt und Betreff gesetzt.");
+          } else {
+            setStatus("Text eingefügt. Betreff konnte nicht gesetzt werden.");
+          }
+        });
+      } else {
+        setStatus("Text eingefügt.");
       }
     }
   );
