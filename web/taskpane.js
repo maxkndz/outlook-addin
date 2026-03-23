@@ -77,19 +77,23 @@ function getCheckedMapped(map) {
 
 function buildHtmlMail(intro, reasons, closing) {
   let html = "";
+
+  // Anrede + Leerzeile danach
   html += "<p>Sehr geehrte Damen und Herren,</p>";
+  html += "<p>&nbsp;</p>";
+
   html += `<p>${escapeHtml(intro)}</p>`;
   html += "<p>Die durchgeführten Stichproben ergeben nachfolgenden Prüf- bzw. Überarbeitungsbedarf (ohne Anspruch auf Vollständigkeit):</p>";
-  html += "<ul>";
 
+  html += "<ul>";
   reasons.forEach((reason) => {
     html += `<li>${escapeHtml(reason)}</li>`;
   });
-
   html += "</ul>";
+
   html += `<p>${escapeHtml(closing)}</p>`;
 
-  // 👉 Leerzeile vor "Für Rückfragen..."
+  // Genau eine Leerzeile vor Schluss
   html += "<p>&nbsp;</p>";
 
   html += "<p>Für Rückfragen stehen wir gerne zur Verfügung.</p>";
