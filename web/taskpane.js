@@ -25,13 +25,8 @@ Office.onReady(() => {
   const typeNachtrag = document.getElementById("typeNachtrag");
   const btnInsert = document.getElementById("btnInsert");
 
-  if (typeRechnung) {
-    typeRechnung.addEventListener("change", toggleSections);
-  }
-
-  if (typeNachtrag) {
-    typeNachtrag.addEventListener("change", toggleSections);
-  }
+  if (typeRechnung) typeRechnung.addEventListener("change", toggleSections);
+  if (typeNachtrag) typeNachtrag.addEventListener("change", toggleSections);
 
   if (btnInsert) {
     btnInsert.addEventListener("click", () => {
@@ -54,19 +49,17 @@ function toggleSections() {
   const nachtragSection = document.getElementById("nachtragSection");
 
   if (isNachtrag) {
-    if (rechnungSection) rechnungSection.classList.add("hidden");
-    if (nachtragSection) nachtragSection.classList.remove("hidden");
+    rechnungSection?.classList.add("hidden");
+    nachtragSection?.classList.remove("hidden");
   } else {
-    if (nachtragSection) nachtragSection.classList.add("hidden");
-    if (rechnungSection) rechnungSection.classList.remove("hidden");
+    nachtragSection?.classList.add("hidden");
+    rechnungSection?.classList.remove("hidden");
   }
 }
 
 function setStatus(message) {
   const status = document.getElementById("status");
-  if (status) {
-    status.textContent = message;
-  }
+  if (status) status.textContent = message;
 }
 
 function getCheckedMapped(map) {
@@ -95,6 +88,10 @@ function buildHtmlMail(intro, reasons, closing) {
 
   html += "</ul>";
   html += `<p>${escapeHtml(closing)}</p>`;
+
+  // 👉 Leerzeile vor "Für Rückfragen..."
+  html += "<p>&nbsp;</p>";
+
   html += "<p>Für Rückfragen stehen wir gerne zur Verfügung.</p>";
 
   return html;
@@ -109,9 +106,7 @@ function escapeHtml(text) {
 
 function buildSubject(type) {
   const useSubject = document.getElementById("useSubject")?.checked;
-  if (!useSubject) {
-    return null;
-  }
+  if (!useSubject) return null;
 
   const projekt = (document.getElementById("proj")?.value || "").trim();
   const vergabe = (document.getElementById("verg")?.value || "").trim();
@@ -131,8 +126,9 @@ function insertRechnung() {
 
   const intro = "im Zuge der Plausibilitätsprüfung der eingereichten Rechnung ergeben sich Unstimmigkeiten, die eine Weitergabe an den Bauherrn und damit eine Freigabe derzeit nicht ermöglichen.";
   const closing = "Wir bitten Sie, die genannten Punkte sowie darüber hinausgehende Aspekte entsprechend zu prüfen, die Unterlagen zu überarbeiten und erneut vorzulegen.";
-  const subject = buildSubject("rechnung");
+
   const html = buildHtmlMail(intro, reasons, closing);
+  const subject = buildSubject("rechnung");
 
   insertTemplate(html, subject);
 }
@@ -147,8 +143,9 @@ function insertNachtrag() {
 
   const intro = "im Zuge der Plausibilitätsprüfung des eingereichten Nachtrags ergeben sich Unstimmigkeiten, die eine Weitergabe an den Bauherrn und damit die Beauftragung derzeit nicht ermöglichen.";
   const closing = "Wir bitten Sie, die genannten Punkte sowie darüber hinausgehende Aspekte entsprechend zu prüfen, die Unterlagen zu überarbeiten und erneut vorzulegen.";
-  const subject = buildSubject("nachtrag");
+
   const html = buildHtmlMail(intro, reasons, closing);
+  const subject = buildSubject("nachtrag");
 
   insertTemplate(html, subject);
 }
