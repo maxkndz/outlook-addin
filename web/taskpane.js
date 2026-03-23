@@ -1,61 +1,122 @@
 /* global Office */
 
 Office.onReady(() => {
-  const btnRechnung = document.getElementById("btnRechnung");
-  const btnNachtrag = document.getElementById("btnNachtrag");
+  const typeRechnung = document.getElementById("typeRechnung");
+  const typeNachtrag = document.getElementById("typeNachtrag");
+  const btnInsert = document.getElementById("btnInsert");
 
-  if (btnRechnung) {
-    btnRechnung.addEventListener("click", () => {
-      insertTemplate([
-        "<p>Sehr geehrte Damen und Herren,</p>",
-        "<p>im Zuge der Plausibilitätsprüfung der eingereichten Rechnung ergeben sich Unstimmigkeiten, die eine Überprüfung bzw. Freigabe derzeit nicht ermöglichen.</p>",
-        "<p>Im Einzelnen ergeben sich folgende Punkte:</p>",
-        "<ul>",
-        "<li>Fehlende Nachweise / Anlagen</li>",
-        "<li>Nicht nachvollziehbare Nachweise / Anlagen</li>",
-        "<li>Abweichungen von den vereinbarten Einheitspreisen gemäß Leistungsverzeichnis / Auftrag</li>",
-        "<li>Abrechnung nicht beauftragter Leistungen</li>",
-        "<li>Rechnerische Fehler</li>",
-        "<li>Überschreitung der Auftragssumme</li>",
-        "<li>Übertragungsfehler</li>",
-        "<li>Falscher Stempel</li>",
-        "</ul>",
-        "<p>Wir bitten Sie, die genannten Punkte zu prüfen, die Unterlage(n) entsprechend zu überarbeiten und erneut vorzulegen.</p>",
-        "<p>Für Rückfragen stehen wir gerne zur Verfügung.</p>"
-      ].join(""));
+  if (typeRechnung) {
+    typeRechnung.addEventListener("change", toggleSections);
+  }
+
+  if (typeNachtrag) {
+    typeNachtrag.addEventListener("change", toggleSections);
+  }
+
+  if (btnInsert) {
+    btnInsert.addEventListener("click", () => {
+      const selectedType = document.querySelector('input[name="mailType"]:checked')?.value;
+
+      if (selectedType === "nachtrag") {
+        insertNachtrag();
+      } else {
+        insertRechnung();
+      }
     });
   }
 
-  if (btnNachtrag) {
-    btnNachtrag.addEventListener("click", () => {
-      insertTemplate([
-        "<p>Sehr geehrte Damen und Herren,</p>",
-        "<p>im Zuge der Plausibilitätsprüfung des eingereichten Nachtrags ergeben sich Unstimmigkeiten, die eine Überprüfung bzw. Freigabe derzeit nicht ermöglichen.</p>",
-        "<p>Im Einzelnen ergeben sich folgende Punkte:</p>",
-        "<ul>",
-        "<li>Fehlende Nachweise / Anlagen</li>",
-        "<li>Nicht nachvollziehbare Nachweise / Anlagen</li>",
-        "<li>Abweichungen von den vereinbarten Einheitspreisen</li>",
-        "<li>Unangemessene Preisansätze</li>",
-        "<li>Fehlende Nachtragsbegründung / Unzureichende Nachtragsbegründung</li>",
-        "<li>Leistungen bereits beauftragt</li>",
-        "<li>Nicht nachvollziehbare Mengenansätze</li>",
-        "<li>Rechnerische Fehler</li>",
-        "<li>Übertragungsfehler</li>",
-        "<li>Falscher Stempel</li>",
-        "</ul>",
-        "<p>Wir bitten Sie, die genannten Punkte zu prüfen, die Unterlage(n) entsprechend zu überarbeiten und erneut vorzulegen.</p>",
-        "<p>Für Rückfragen stehen wir gerne zur Verfügung.</p>"
-      ].join(""));
-    });
-  }
+  toggleSections();
 });
+
+function toggleSections() {
+  const isNachtrag = document.getElementById("typeNachtrag")?.checked;
+  const rechnungSection = document.getElementById("rechnungSection");
+  const nachtragSection = document.getElementById("nachtragSection");
+
+  if (isNachtrag) {
+    rechnungSection?.classList.add("hidden");
+    nachtragSection?.classList.remove("hidden");
+  } else {
+    nachtragSection?.classList.add("hidden");
+    rechnungSection?.classList.remove("hidden");
+  }
+}
 
 function setStatus(message) {
   const status = document.getElementById("status");
   if (status) {
     status.textContent = message;
   }
+}
+
+function getCheckedReasons(prefix, count) {
+  const reasons = [];
+
+  for (let i = 1; i <= count; i++) {
+    const checkbox = document.getElementById(`${prefix}${i}`);
+    const label = document.querySelector(`label[for="${prefix}${i}"]`);
+
+    if (checkbox && checkbox.checked && label) {
+      reasons.push(label.textContent.trim());
+    }
+  }
+
+  return reasons;
+}
+
+function buildHtmlMail(greetingIntro, reasons, closingText) {
+  let html = "";
+  html += "<p>Sehr geehrte Damen und Herren,</p>";
+  html += `<p>${greetingIntro}</p>`;
+  html += "<p>Im Einzelnen ergeben sich folgende Punkte:</p>";
+  html += "<ul>";
+
+  reasons.forEach((reason) => {
+    html += `<li>${escapeHtml(reason)}</li>`;
+  });
+
+  html += "</ul>";
+  html += `<p>${closingText}</p>`;
+  html += "<p>Für Rückfragen stehen wir gerne zur Verfügung.</p>";
+
+  return html;
+}
+
+function escapeHtml(text) {
+  return text
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+function insertRechnung() {
+  const reasons = getCheckedReasons("r", 8);
+
+  if (reasons.length === 0) {
+    setStatus("Bitte mindestens einen Grund auswählen.");
+    return;
+  }
+
+  const intro = "im Zuge der Plausibilitätsprüfung der eingereichten Rechnung ergeben sich Unstimmigkeiten, die eine Überprüfung bzw. Freigabe derzeit nicht ermöglichen.";
+  const closing = "Wir bitten Sie, die genannten Punkte zu prüfen, die Unterlage(n) entsprechend zu überarbeiten und erneut vorzulegen.";
+
+  const html = buildHtmlMail(intro, reasons, closing);
+  insertTemplate(html);
+}
+
+function insertNachtrag() {
+  const reasons = getCheckedReasons("n", 10);
+
+  if (reasons.length === 0) {
+    setStatus("Bitte mindestens einen Grund auswählen.");
+    return;
+  }
+
+  const intro = "im Zuge der Plausibilitätsprüfung des eingereichten Nachtrags ergeben sich Unstimmigkeiten, die eine Überprüfung bzw. Freigabe derzeit nicht ermöglichen.";
+  const closing = "Wir bitten Sie, die genannten Punkte zu prüfen, die Unterlage(n) entsprechend zu überarbeiten und erneut vorzulegen.";
+
+  const html = buildHtmlMail(intro, reasons, closing);
+  insertTemplate(html);
 }
 
 function insertTemplate(htmlTemplate) {

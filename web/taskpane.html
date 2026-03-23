@@ -36,6 +36,42 @@
       font-size: 11pt;
     }
 
+    .option-box {
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      background: #fafafa;
+    }
+
+    .radio-row,
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .radio-row:last-child,
+    .checkbox-row:last-child {
+      margin-bottom: 0;
+    }
+
+    input[type="radio"],
+    input[type="checkbox"] {
+      margin-top: 2px;
+      flex: 0 0 auto;
+    }
+
+    label {
+      line-height: 1.35;
+      cursor: pointer;
+    }
+
+    .actions {
+      margin-top: 16px;
+    }
+
     button {
       width: 100%;
       display: block;
@@ -63,20 +99,118 @@
       min-height: 20px;
       font-size: 11pt;
     }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <h2>S.R Standards</h2>
 
   <div class="hint">
-    Bitte Vorlage auswählen. Der Text wird in die aktuell geöffnete E-Mail eingefügt.
+    Bitte Vorgang und zutreffende Punkte auswählen. Der Text wird in die aktuell geöffnete E-Mail eingefügt.
   </div>
 
-  <div class="section-title">Gewerkerechnungen</div>
-  <button id="btnRechnung" type="button">Rückgabe Gewerkerechnung</button>
+  <div class="section-title">Vorgang</div>
+  <div class="option-box">
+    <div class="radio-row">
+      <input type="radio" id="typeRechnung" name="mailType" value="rechnung" checked>
+      <label for="typeRechnung">Gewerkerechnung</label>
+    </div>
+    <div class="radio-row">
+      <input type="radio" id="typeNachtrag" name="mailType" value="nachtrag">
+      <label for="typeNachtrag">Gewerkenachtrag</label>
+    </div>
+  </div>
 
-  <div class="section-title">Gewerkenachträge</div>
-  <button id="btnNachtrag" type="button">Rückgabe Gewerkenachtrag</button>
+  <div id="rechnungSection">
+    <div class="section-title">Gründe – Gewerkerechnung</div>
+    <div class="option-box">
+      <div class="checkbox-row">
+        <input type="checkbox" id="r1">
+        <label for="r1">Fehlende Nachweise / Anlagen</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="r2">
+        <label for="r2">Nicht nachvollziehbare Nachweise / Anlagen</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="r3">
+        <label for="r3">Abweichungen von den vereinbarten Einheitspreisen gemäß Leistungsverzeichnis / Auftrag</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="r4">
+        <label for="r4">Abrechnung nicht beauftragter Leistungen</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="r5">
+        <label for="r5">Rechnerische Fehler</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="r6">
+        <label for="r6">Überschreitung der Auftragssumme</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="r7">
+        <label for="r7">Übertragungsfehler</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="r8">
+        <label for="r8">Falscher Stempel</label>
+      </div>
+    </div>
+  </div>
+
+  <div id="nachtragSection" class="hidden">
+    <div class="section-title">Gründe – Gewerkenachtrag</div>
+    <div class="option-box">
+      <div class="checkbox-row">
+        <input type="checkbox" id="n1">
+        <label for="n1">Fehlende Nachweise / Anlagen</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="n2">
+        <label for="n2">Nicht nachvollziehbare Nachweise / Anlagen</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="n3">
+        <label for="n3">Abweichungen von den vereinbarten Einheitspreisen</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="n4">
+        <label for="n4">Unangemessene Preisansätze</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="n5">
+        <label for="n5">Fehlende Nachtragsbegründung / Unzureichende Nachtragsbegründung</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="n6">
+        <label for="n6">Leistungen bereits beauftragt</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="n7">
+        <label for="n7">Nicht nachvollziehbare Mengenansätze</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="n8">
+        <label for="n8">Rechnerische Fehler</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="n9">
+        <label for="n9">Übertragungsfehler</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="n10">
+        <label for="n10">Falscher Stempel</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button id="btnInsert" type="button">Text einfügen</button>
+  </div>
 
   <div id="status" class="status">Bereit.</div>
 </body>
