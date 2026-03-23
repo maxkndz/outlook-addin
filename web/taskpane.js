@@ -125,7 +125,7 @@ function insertRechnung() {
   }
 
   const intro = "im Zuge der Plausibilitätsprüfung der eingereichten Rechnung ergeben sich Unstimmigkeiten, die eine Weitergabe an den Bauherrn und damit eine Freigabe derzeit nicht ermöglichen.";
-  const closing = "Wir bitten Sie, die genannten Punkte sowie darüber hinausgehende Aspekte entsprechend zu prüfen, die Unterlagen zu überarbeiten und erneut vorzulegen.";
+  const closing = "Wir bitten Sie, die genannten Punkte sowie darüberhinausgehende Aspekte entsprechend zu prüfen, die Unterlagen zu überarbeiten und erneut vorzulegen.";
 
   const html = buildHtmlMail(intro, reasons, closing);
   const subject = buildSubject("rechnung");
@@ -142,7 +142,7 @@ function insertNachtrag() {
   }
 
   const intro = "im Zuge der Plausibilitätsprüfung des eingereichten Nachtrags ergeben sich Unstimmigkeiten, die eine Weitergabe an den Bauherrn und damit die Beauftragung derzeit nicht ermöglichen.";
-  const closing = "Wir bitten Sie, die genannten Punkte sowie darüber hinausgehende Aspekte entsprechend zu prüfen, die Unterlagen zu überarbeiten und erneut vorzulegen.";
+  const closing = "Wir bitten Sie, die genannten Punkte sowie darüberhinausgehende Aspekte entsprechend zu prüfen, die Unterlagen zu überarbeiten und erneut vorzulegen.";
 
   const html = buildHtmlMail(intro, reasons, closing);
   const subject = buildSubject("nachtrag");
