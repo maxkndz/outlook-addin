@@ -1,9 +1,3 @@
-
----
-
-## 2) `manifest.xml`
-
-```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <OfficeApp
     xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
@@ -17,15 +11,16 @@
   <ProviderName>Schmitz.Reichard</ProviderName>
   <DefaultLocale>de-DE</DefaultLocale>
 
-  <DisplayName DefaultValue="SR Standards"/>
+  <DisplayName DefaultValue="S.R Standards"/>
   <Description DefaultValue="Fügt Standardtexte in neue Outlook-Nachrichten ein."/>
 
-  <IconUrl DefaultValue="https://YOUR-DOMAIN.example.com/web/icons/icon-80.png"/>
-  <HighResolutionIconUrl DefaultValue="https://YOUR-DOMAIN.example.com/web/icons/icon-80.png"/>
-  <SupportUrl DefaultValue="https://YOUR-DOMAIN.example.com"/>
+  <IconUrl DefaultValue="https://maxkndz.github.io/outlook-addin/web/icons/icon-80.png"/>
+  <HighResolutionIconUrl DefaultValue="https://maxkndz.github.io/outlook-addin/web/icons/icon-80.png"/>
+  <SupportUrl DefaultValue="https://maxkndz.github.io/outlook-addin"/>
 
+  <!-- WICHTIG: nur Domain, kein Pfad -->
   <AppDomains>
-    <AppDomain>https://YOUR-DOMAIN.example.com</AppDomain>
+    <AppDomain>https://maxkndz.github.io</AppDomain>
   </AppDomains>
 
   <Hosts>
@@ -41,7 +36,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://YOUR-DOMAIN.example.com/web/commands.html"/>
+        <SourceLocation DefaultValue="https://maxkndz.github.io/outlook-addin/web/commands.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -106,25 +101,27 @@
       </Hosts>
 
       <Resources>
+
         <bt:Images>
-          <bt:Image id="Icon.16" DefaultValue="https://YOUR-DOMAIN.example.com/web/icons/icon-16.png"/>
-          <bt:Image id="Icon.32" DefaultValue="https://YOUR-DOMAIN.example.com/web/icons/icon-32.png"/>
-          <bt:Image id="Icon.80" DefaultValue="https://YOUR-DOMAIN.example.com/web/icons/icon-80.png"/>
+          <bt:Image id="Icon.16" DefaultValue="https://maxkndz.github.io/outlook-addin/web/icons/icon-16.png"/>
+          <bt:Image id="Icon.32" DefaultValue="https://maxkndz.github.io/outlook-addin/web/icons/icon-32.png"/>
+          <bt:Image id="Icon.80" DefaultValue="https://maxkndz.github.io/outlook-addin/web/icons/icon-80.png"/>
         </bt:Images>
 
         <bt:Urls>
-          <bt:Url id="Commands.Url" DefaultValue="https://YOUR-DOMAIN.example.com/web/commands.html"/>
-          <bt:Url id="Taskpane.Url" DefaultValue="https://YOUR-DOMAIN.example.com/web/taskpane.html"/>
+          <bt:Url id="Commands.Url" DefaultValue="https://maxkndz.github.io/outlook-addin/web/commands.html"/>
+          <bt:Url id="Taskpane.Url" DefaultValue="https://maxkndz.github.io/outlook-addin/web/taskpane.html"/>
         </bt:Urls>
 
         <bt:ShortStrings>
-          <bt:String id="Group.Label" DefaultValue="SR Standards"/>
-          <bt:String id="OpenPane.Label" DefaultValue="SR Standards"/>
+          <bt:String id="Group.Label" DefaultValue="S.R Standards"/>
+          <bt:String id="OpenPane.Label" DefaultValue="S.R Standards"/>
         </bt:ShortStrings>
 
         <bt:LongStrings>
           <bt:String id="OpenPane.Desc" DefaultValue="Öffnet das SR-Panel mit Standardtexten für neue E-Mails."/>
         </bt:LongStrings>
+
       </Resources>
 
     </VersionOverrides>
