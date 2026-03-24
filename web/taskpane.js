@@ -68,9 +68,17 @@ function getCheckedMapped(map) {
   const reasons = [];
 
   Object.keys(map).forEach((key) => {
-    const el = document.getElementById(key);
-    if (el && el.checked) {
-      reasons.push(map[key]);
+    const checkbox = document.getElementById(key);
+    const note = document.getElementById(`${key}_note`)?.value?.trim() || "";
+
+    if (checkbox && checkbox.checked) {
+      let text = map[key];
+
+      if (note) {
+        text += ` (Stichprobe: ${note})`;
+      }
+
+      reasons.push(text);
     }
   });
 
