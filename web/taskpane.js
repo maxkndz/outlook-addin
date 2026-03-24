@@ -1,25 +1,25 @@
 /* global Office */
 
 const rechnungMap = {
-  r1: "Bitte prüfen Sie die Vollständigkeit der Nachweise / Anlagen",
-  r2: "Bitte prüfen Sie die Nachvollziehbarkeit der Nachweise / Anlagen",
-  r3: "Bitte prüfen Sie die Übereinstimmung der abgerechneten Einheitspreise mit dem Leistungsverzeichnis / Auftrag",
-  r4: "Bitte prüfen Sie, ob ausschließlich beauftragte Leistungen abgerechnet wurden",
-  r5: "Bitte prüfen Sie die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
-  r6: "Bitte prüfen Sie die Einhaltung der vereinbarten Auftragssumme",
-  r7: "Bitte prüfen Sie die Vollständigkeit und Richtigkeit der formalen Angaben (z. B. Stempel)"
+  r1: "Die Vollständigkeit der Nachweise / Anlagen",
+  r2: "Die Nachvollziehbarkeit der Nachweise / Anlagen",
+  r3: "Die Übereinstimmung der abgerechneten Einheitspreise mit dem Leistungsverzeichnis / Auftrag",
+  r4: "Ob ausschließlich beauftragte Leistungen abgerechnet wurden",
+  r5: "Die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
+  r6: "Die Einhaltung der vereinbarten Auftragssumme",
+  r7: "Die Vollständigkeit und Richtigkeit der formalen Angaben (z. B. Stempel)"
 };
 
 const nachtragMap = {
-  n1: "Bitte prüfen Sie die Vollständigkeit der Nachweise / Anlagen",
-  n2: "Bitte prüfen Sie die Nachvollziehbarkeit der Nachweise / Anlagen",
-  n3: "Bitte prüfen Sie die Übereinstimmung der angesetzten Einheitspreise mit den vertraglichen Vereinbarungen",
-  n4: "Bitte prüfen Sie die Angemessenheit der Preisansätze",
-  n5: "Bitte prüfen Sie die Nachvollziehbarkeit der Nachtragsbegründung",
-  n6: "Bitte prüfen Sie, ob Leistungen bereits vom bestehenden Auftrag umfasst sind",
-  n7: "Bitte prüfen Sie die Herleitung und Nachvollziehbarkeit der Mengenansätze",
-  n8: "Bitte prüfen Sie die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
-  n9: "Bitte prüfen Sie die Vollständigkeit und Richtigkeit der formalen Angaben (z. B. Stempel)"
+  n1: "Die Vollständigkeit der Nachweise / Anlagen",
+  n2: "Die Nachvollziehbarkeit der Nachweise / Anlagen",
+  n3: "Die Übereinstimmung der angesetzten Einheitspreise mit den vertraglichen Vereinbarungen",
+  n4: "Die Angemessenheit der Preisansätze",
+  n5: "Die Nachvollziehbarkeit der Nachtragsbegründung",
+  n6: "Ob Leistungen bereits vom bestehenden Auftrag umfasst sind",
+  n7: "Die Herleitung und Nachvollziehbarkeit der Mengenansätze",
+  n8: "Die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
+  n9: "Die Vollständigkeit und Richtigkeit der formalen Angaben (z. B. Stempel)"
 };
 
 Office.onReady(() => {
@@ -75,7 +75,7 @@ function getCheckedMapped(map) {
       let text = map[key];
 
       if (note) {
-        text += ` (Stichprobe: ${note})`;
+        text += ` (Ergebnis der Stichprobe(n): ${note})`;
       }
 
       reasons.push(text);
@@ -92,7 +92,8 @@ function buildHtmlMail(intro, reasons, closing) {
   html += "<p>&nbsp;</p>";
 
   html += `<p>${escapeHtml(intro)}</p>`;
-  html += "<p>Die durchgeführten Stichproben ergeben nachfolgenden Prüf- bzw. Überarbeitungsbedarf (ohne Anspruch auf Vollständigkeit):</p>";
+  html += "<p>Die durchgeführten Stichproben ergeben nachfolgenden Prüf- bzw. Überarbeitungsbedarf (ohne Anspruch auf Vollständigkeit).</p>";
+  html += "<p>Bitte prüfen Sie:</p>";
 
   html += "<ul>";
   reasons.forEach((reason) => {
