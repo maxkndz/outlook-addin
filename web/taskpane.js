@@ -138,7 +138,7 @@ function insertRechnung() {
     return;
   }
 
-  const intro = "im Zuge der Plausibilitätsprüfung der eingereichten Rechnung ergeben sich Unstimmigkeiten, die einer Weitergabe an den Bauherrn und damit der Beauftragung derzeit entgegenstehen.";
+  const intro = "im Zuge der Plausibilitätsprüfung der eingereichten Rechnung ergeben sich Unstimmigkeiten, die einer Weitergabe an den Bauherrn und damit der Freigabe derzeit entgegenstehen.";
   const closing = "Bitte überarbeiten Sie Ihre Rechnungsprüfung auch über die genannten Punkte hinaus und legen Sie die Prüfung erneut vor.";
 
   const html = buildHtmlMail(intro, reasons, closing);
