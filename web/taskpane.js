@@ -4,7 +4,7 @@ const rechnungMap = {
   r1: "Die Vollständigkeit der Nachweise / Anlagen",
   r2: "Die Nachvollziehbarkeit der Nachweise / Anlagen",
   r3: "Die Übereinstimmung der abgerechneten Einheitspreise mit dem Leistungsverzeichnis / Auftrag",
-  r4: "Ob ausschließlich beauftragte Leistungen abgerechnet wurden",
+  r4: "Auf Rechnungspositionen, für die kein Auftrag vorliegt. Diese müssen gestrichen werden.",
   r5: "Die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
   r6: "Die Einhaltung der vereinbarten Auftragssumme",
   r7: "Die Vollständigkeit und Richtigkeit der formalen Angaben (z. B. Stempel)"
@@ -16,7 +16,7 @@ const nachtragMap = {
   n3: "Die Übereinstimmung der angesetzten Einheitspreise mit den vertraglichen Vereinbarungen",
   n4: "Die Angemessenheit der Preisansätze",
   n5: "Die Nachvollziehbarkeit der Nachtragsbegründung",
-  n6: "Ob Leistungen bereits vom bestehenden Auftrag umfasst sind",
+  n6: "Auf Leistungen, die bereits vom bestehenden Auftrag umfasst sind",
   n7: "Die Herleitung und Nachvollziehbarkeit der Mengenansätze",
   n8: "Die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
   n9: "Die Vollständigkeit und Richtigkeit der formalen Angaben (z. B. Stempel)"
@@ -88,22 +88,21 @@ function getCheckedMapped(map) {
 function buildHtmlMail(intro, reasons, closing) {
   let html = "";
 
-  html += "<p>Sehr geehrte Damen und Herren,</p>";
-  html += "<p>&nbsp;</p>";
+  html += '<div style="font-family:Calibri, Arial, sans-serif; font-size:11pt; line-height:1.35; color:#222222;">';
+  html += "<p style=\"margin:0 0 12pt 0;\">Sehr geehrte Damen und Herren,</p>";
+  html += `<p style="margin:0 0 12pt 0;">${escapeHtml(intro)}</p>`;
+  html += "<p style=\"margin:0 0 12pt 0;\">Die durchgeführten Stichproben ergeben nachfolgenden Prüf- bzw. Überarbeitungsbedarf (ohne Anspruch auf Vollständigkeit).</p>";
+  html += "<p style=\"margin:0 0 6pt 0;\">Bitte prüfen Sie:</p>";
 
-  html += `<p>${escapeHtml(intro)}</p>`;
-  html += "<p>Die durchgeführten Stichproben ergeben nachfolgenden Prüf- bzw. Überarbeitungsbedarf (ohne Anspruch auf Vollständigkeit).</p>";
-  html += "<p>Bitte prüfen Sie:</p>";
-
-  html += "<ul>";
+  html += '<ul style="margin:0 0 12pt 24px; padding:0;">';
   reasons.forEach((reason) => {
-    html += `<li>${escapeHtml(reason)}</li>`;
+    html += `<li style="margin:0 0 6pt 0;">${escapeHtml(reason)}</li>`;
   });
   html += "</ul>";
 
-  html += `<p>${escapeHtml(closing)}</p>`;
-  html += "<p>&nbsp;</p>";
-  html += "<p>Für Rückfragen stehen wir gerne zur Verfügung.</p>";
+  html += `<p style="margin:0 0 12pt 0;">${escapeHtml(closing)}</p>`;
+  html += "<p style=\"margin:0;\">Für Rückfragen stehen wir gerne zur Verfügung.</p>";
+  html += "</div>";
 
   return html;
 }
@@ -115,19 +114,18 @@ function escapeHtml(text) {
     .replaceAll(">", "&gt;");
 }
 
-function buildSubject(type) {
+function buildSubject() {
   const useSubject = document.getElementById("useSubject")?.checked;
   if (!useSubject) return null;
 
-  const projekt = (document.getElementById("proj")?.value || "").trim();
-  const vergabe = (document.getElementById("verg")?.value || "").trim();
-  const auftragnehmer = (document.getElementById("auftr")?.value || "").trim();
-  const laufendeNummer = (document.getElementById("lfdnr")?.value || "").trim();
+  const parts = [
+    (document.getElementById("proj")?.value || "").trim(),
+    (document.getElementById("verg")?.value || "").trim(),
+    (document.getElementById("auftr")?.value || "").trim(),
+    (document.getElementById("subjLast")?.value || "").trim()
+  ].filter(Boolean);
 
-  const suffixPrefix = type === "nachtrag" ? "Nachtrag" : "Rechnung";
-  const suffix = laufendeNummer ? `${suffixPrefix} ${laufendeNummer}` : `${suffixPrefix} XY`;
-
-  return `${projekt} | ${vergabe} | ${auftragnehmer} | ${suffix}`;
+  return parts.length ? parts.join(" | ") : null;
 }
 
 function insertRechnung() {
@@ -138,11 +136,11 @@ function insertRechnung() {
     return;
   }
 
-  const intro = "im Zuge der Plausibilitätsprüfung der eingereichten Rechnung ergeben sich Unstimmigkeiten, die eine Weitergabe an den Bauherrn und damit eine Freigabe derzeit nicht ermöglichen.";
-  const closing = "Wir bitten Sie, die genannten Punkte sowie darüberhinausgehende Aspekte entsprechend zu prüfen, die Unterlagen zu überarbeiten und erneut vorzulegen.";
+  const intro = "im Zuge der Plausibilitätsprüfung der eingereichten Rechnung ergeben sich Unstimmigkeiten, die einer Weitergabe an den Bauherrn und damit der Beauftragung derzeit entgegenstehen.";
+  const closing = "Bitte überarbeiten Sie Ihre Rechnungsprüfung auch über die genannten Punkte hinaus und legen Sie die Prüfung erneut vor.";
 
   const html = buildHtmlMail(intro, reasons, closing);
-  const subject = buildSubject("rechnung");
+  const subject = buildSubject();
 
   insertTemplate(html, subject);
 }
@@ -155,11 +153,11 @@ function insertNachtrag() {
     return;
   }
 
-  const intro = "im Zuge der Plausibilitätsprüfung des eingereichten Nachtrags ergeben sich Unstimmigkeiten, die eine Weitergabe an den Bauherrn und damit die Beauftragung derzeit nicht ermöglichen.";
-  const closing = "Wir bitten Sie, die genannten Punkte sowie darüberhinausgehende Aspekte entsprechend zu prüfen, die Unterlagen zu überarbeiten und erneut vorzulegen.";
+  const intro = "im Zuge der Plausibilitätsprüfung des eingereichten Nachtrags ergeben sich Unstimmigkeiten, die einer Weitergabe an den Bauherrn und damit der Beauftragung derzeit entgegenstehen.";
+  const closing = "Bitte überarbeiten Sie Ihre Nachtragsprüfung auch über die genannten Punkte hinaus und legen Sie die Prüfung erneut vor.";
 
   const html = buildHtmlMail(intro, reasons, closing);
-  const subject = buildSubject("nachtrag");
+  const subject = buildSubject();
 
   insertTemplate(html, subject);
 }
