@@ -1,23 +1,25 @@
 /* global Office */
 
 const rechnungMap = {
-  r1: "Bitte prüfen Sie die Vollständigkeit und Nachvollziehbarkeit der Nachweise / Anlagen",
-  r2: "Bitte prüfen Sie die Übereinstimmung der abgerechneten Einheitspreise mit dem Leistungsverzeichnis / Auftrag",
-  r3: "Bitte prüfen Sie, ob ausschließlich beauftragte Leistungen abgerechnet wurden",
-  r4: "Bitte prüfen Sie die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
-  r5: "Bitte prüfen Sie die Einhaltung der vereinbarten Auftragssumme",
-  r6: "Bitte prüfen Sie die Vollständigkeit und Richtigkeit der formalen Angaben (z. B. Stempel)"
+  r1: "Bitte prüfen Sie die Vollständigkeit der Nachweise / Anlagen",
+  r2: "Bitte prüfen Sie die Nachvollziehbarkeit der Nachweise / Anlagen",
+  r3: "Bitte prüfen Sie die Übereinstimmung der abgerechneten Einheitspreise mit dem Leistungsverzeichnis / Auftrag",
+  r4: "Bitte prüfen Sie, ob ausschließlich beauftragte Leistungen abgerechnet wurden",
+  r5: "Bitte prüfen Sie die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
+  r6: "Bitte prüfen Sie die Einhaltung der vereinbarten Auftragssumme",
+  r7: "Bitte prüfen Sie die Vollständigkeit und Richtigkeit der formalen Angaben (z. B. Stempel)"
 };
 
 const nachtragMap = {
-  n1: "Bitte prüfen Sie die Vollständigkeit und Nachvollziehbarkeit der Nachweise / Anlagen",
-  n2: "Bitte prüfen Sie die Übereinstimmung der angesetzten Einheitspreise mit den vertraglichen Vereinbarungen",
-  n3: "Bitte prüfen Sie die Angemessenheit der Preisansätze",
-  n4: "Bitte prüfen Sie die Nachvollziehbarkeit der Nachtragsbegründung",
-  n5: "Bitte prüfen Sie, ob Leistungen bereits vom bestehenden Auftrag umfasst sind",
-  n6: "Bitte prüfen Sie die Herleitung und Nachvollziehbarkeit der Mengenansätze",
-  n7: "Bitte prüfen Sie die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
-  n8: "Bitte prüfen Sie die Vollständigkeit und Richtigkeit der formalen Angaben (z. B. Stempel)"
+  n1: "Bitte prüfen Sie die Vollständigkeit der Nachweise / Anlagen",
+  n2: "Bitte prüfen Sie die Nachvollziehbarkeit der Nachweise / Anlagen",
+  n3: "Bitte prüfen Sie die Übereinstimmung der angesetzten Einheitspreise mit den vertraglichen Vereinbarungen",
+  n4: "Bitte prüfen Sie die Angemessenheit der Preisansätze",
+  n5: "Bitte prüfen Sie die Nachvollziehbarkeit der Nachtragsbegründung",
+  n6: "Bitte prüfen Sie, ob Leistungen bereits vom bestehenden Auftrag umfasst sind",
+  n7: "Bitte prüfen Sie die Herleitung und Nachvollziehbarkeit der Mengenansätze",
+  n8: "Bitte prüfen Sie die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
+  n9: "Bitte prüfen Sie die Vollständigkeit und Richtigkeit der formalen Angaben (z. B. Stempel)"
 };
 
 Office.onReady(() => {
@@ -78,7 +80,6 @@ function getCheckedMapped(map) {
 function buildHtmlMail(intro, reasons, closing) {
   let html = "";
 
-  // Anrede + Leerzeile danach
   html += "<p>Sehr geehrte Damen und Herren,</p>";
   html += "<p>&nbsp;</p>";
 
@@ -92,10 +93,7 @@ function buildHtmlMail(intro, reasons, closing) {
   html += "</ul>";
 
   html += `<p>${escapeHtml(closing)}</p>`;
-
-  // Genau eine Leerzeile vor Schluss
   html += "<p>&nbsp;</p>";
-
   html += "<p>Für Rückfragen stehen wir gerne zur Verfügung.</p>";
 
   return html;
@@ -115,7 +113,10 @@ function buildSubject(type) {
   const projekt = (document.getElementById("proj")?.value || "").trim();
   const vergabe = (document.getElementById("verg")?.value || "").trim();
   const auftragnehmer = (document.getElementById("auftr")?.value || "").trim();
-  const suffix = type === "nachtrag" ? "Nachtrag XY" : "Rechnung XY";
+  const laufendeNummer = (document.getElementById("lfdnr")?.value || "").trim();
+
+  const suffixPrefix = type === "nachtrag" ? "Nachtrag" : "Rechnung";
+  const suffix = laufendeNummer ? `${suffixPrefix} ${laufendeNummer}` : `${suffixPrefix} XY`;
 
   return `${projekt} | ${vergabe} | ${auftragnehmer} | ${suffix}`;
 }
