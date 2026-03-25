@@ -2,7 +2,7 @@
 
 const rechnungFormalMap = {
   rf1: "das Vorhandensein des Prüfblattes zur Rechnungsprüfung",
-  rf2: "die kummulierte Rechnungsstellung",
+  rf2: "die kumulierte Darstellung der Rechnung",
   rf3: "die korrekte Angabe des Leistungszeitraums",
   rf4: "die Vollständigkeit und Richtigkeit der Prüfstempel",
   rf5: "die korrekte Darstellung der bereits geleisteten Zahlungen",
@@ -11,11 +11,12 @@ const rechnungFormalMap = {
 };
 
 const rechnungInhaltlichMap = {
-  ri1: "die Einhaltung vertraglicher Rahmenbedingungen",
-  ri2: "die Übereinstimmung der abgerechneten Einheitspreise mit dem Leistungsverzeichnis / Auftrag",
-  ri3: "die Abweichungen in Mengen und Massen +/- 10%, bezogen auf den vereinbarten Leistungsumfang",
-  ri4: "die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
-  ri5: "die Nachvollziehbarkeit der Nachweise / Anlagen"
+  ri1: "die Vollständigkeit und Richtigkeit des Prüfblattes zur Rechnungsprüfung",
+  ri2: "die Einhaltung vertraglicher Rahmenbedingungen",
+  ri3: "die Übereinstimmung der abgerechneten Einheitspreise mit dem Leistungsverzeichnis / Auftrag",
+  ri4: "die Abweichungen in Mengen und Massen (max. + 10%), bezogen auf den vereinbarten Leistungsumfang",
+  ri5: "die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
+  ri6: "die Nachvollziehbarkeit der Nachweise / Anlagen"
 };
 
 const nachtragFormalMap = {
@@ -25,13 +26,14 @@ const nachtragFormalMap = {
 };
 
 const nachtragInhaltlichMap = {
-  ni1: "die Nachvollziehbarkeit der Nachtragsbegründung",
-  ni2: "die Leistungen, die bereits vom bestehenden Auftrag umfasst sind",
-  ni3: "die Übereinstimmung der angesetzten Einheitspreise mit den vertraglichen Vereinbarungen bei Mehrmengen",
-  ni4: "die Angemessenheit der Preisansätze",
-  ni5: "die Herleitung und Nachvollziehbarkeit der Mengenansätze",
-  ni6: "die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
-  ni7: "die Nachvollziehbarkeit der Nachweise / Anlagen"
+  ni1: "die Vollständigkeit und Richtigkeit des Prüfblattes zur Nachtragsprüfung",
+  ni2: "die Nachvollziehbarkeit der Nachtragsbegründung",
+  ni3: "die Leistungen, die bereits vom bestehenden Auftrag umfasst sind",
+  ni4: "die Übereinstimmung der angesetzten Einheitspreise mit den vertraglichen Vereinbarungen bei Mehrmengen",
+  ni5: "die Angemessenheit der Preisansätze",
+  ni6: "die Herleitung und Nachvollziehbarkeit der Mengenansätze",
+  ni7: "die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
+  ni8: "die Nachvollziehbarkeit der Nachweise / Anlagen"
 };
 
 Office.onReady(() => {
@@ -160,7 +162,7 @@ function insertRechnung() {
   }
 
   const intro = "im Zuge der Plausibilitätsprüfung der eingereichten Rechnung ergeben sich Unstimmigkeiten, die einer Weitergabe an den Bauherrn und damit einer Freigabe entgegenstehen.";
-  const closing = "Bitte überarbeiten Sie Ihre Rechnungsprüfung auch über die genannten Punkte hinaus und legen Sie die Prüfung erneut vor.";
+  const closing = "Bitte überarbeiten Sie Ihre Rechnungsprüfung, wenn erforderlich auch über die genannten Punkte hinaus und legen Sie die Prüfung erneut vor.";
 
   const html = buildHtmlMail(intro, formalReasons, inhaltlichReasons, closing);
   const subject = buildSubject();
@@ -178,7 +180,7 @@ function insertNachtrag() {
   }
 
   const intro = "im Zuge der Plausibilitätsprüfung des eingereichten Nachtrags ergeben sich Unstimmigkeiten, die einer Weitergabe an den Bauherrn und damit der Beauftragung derzeit entgegenstehen.";
-  const closing = "Bitte überarbeiten Sie Ihre Nachtragsprüfung auch über die genannten Punkte hinaus und legen Sie die Prüfung erneut vor.";
+  const closing = "Bitte überarbeiten Sie Ihre Nachtragsprüfung, wenn erforderlich auch über die genannten Punkte hinaus und legen Sie die Prüfung erneut vor.";
 
   const html = buildHtmlMail(intro, formalReasons, inhaltlichReasons, closing);
   const subject = buildSubject();
