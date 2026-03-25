@@ -1,27 +1,37 @@
 /* global Office */
 
-const rechnungMap = {
-  r1: "Die Rechnungsstruktur",
-  r2: "Die Vollständigkeit der Nachweise / Anlagen",
-  r3: "Die Nachvollziehbarkeit der Nachweise / Anlagen",
-  r4: "Die Einhaltung vertraglicher Rahmenbedingungen",
-  r5: "Die Übereinstimmung der abgerechneten Einheitspreise mit dem Leistungsverzeichnis / Auftrag",
-  r6: "Auf Rechnungspositionen, für die kein Auftrag vorliegt. Diese müssen gestrichen werden.",
-  r7: "Die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
-  r8: "Die Einhaltung der vereinbarten Auftragssumme",
-  r9: "Die Vollständigkeit und Richtigkeit der formalen Angaben"
+const rechnungFormalMap = {
+  rf1: "das Vorhandensein des Prüfblattes zur Rechnungsprüfung",
+  rf2: "die kummulierte Rechnungsstellung",
+  rf3: "die korrekte Angabe des Leistungszeitraums",
+  rf4: "die Vollständigkeit und Richtigkeit der Prüfstempel",
+  rf5: "die korrekte Darstellung der bereits geleisteten Zahlungen",
+  rf6: "die Einhaltung der vereinbarten Auftragssumme",
+  rf7: "die Vollständigkeit der Nachweise / Anlagen"
 };
 
-const nachtragMap = {
-  n1: "Die Vollständigkeit der Nachweise / Anlagen",
-  n2: "Die Nachvollziehbarkeit der Nachweise / Anlagen",
-  n3: "Die Übereinstimmung der angesetzten Einheitspreise mit den vertraglichen Vereinbarungen",
-  n4: "Die Angemessenheit der Preisansätze",
-  n5: "Die Nachvollziehbarkeit der Nachtragsbegründung",
-  n6: "Auf Leistungen, die bereits vom bestehenden Auftrag umfasst sind",
-  n7: "Die Herleitung und Nachvollziehbarkeit der Mengenansätze",
-  n8: "Die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
-  n9: "Die Vollständigkeit und Richtigkeit der formalen Angaben"
+const rechnungInhaltlichMap = {
+  ri1: "die Einhaltung vertraglicher Rahmenbedingungen",
+  ri2: "die Übereinstimmung der abgerechneten Einheitspreise mit dem Leistungsverzeichnis / Auftrag",
+  ri3: "die Abweichungen in Mengen und Massen +/- 10%, bezogen auf den vereinbarten Leistungsumfang",
+  ri4: "die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
+  ri5: "die Nachvollziehbarkeit der Nachweise / Anlagen"
+};
+
+const nachtragFormalMap = {
+  nf1: "das Vorhandensein des Prüfblattes zur Nachtragsprüfung",
+  nf2: "die Vollständigkeit und Richtigkeit der Prüfstempel",
+  nf3: "die Vollständigkeit der Nachweise / Anlagen"
+};
+
+const nachtragInhaltlichMap = {
+  ni1: "die Nachvollziehbarkeit der Nachtragsbegründung",
+  ni2: "die Leistungen, die bereits vom bestehenden Auftrag umfasst sind",
+  ni3: "die Übereinstimmung der angesetzten Einheitspreise mit den vertraglichen Vereinbarungen bei Mehrmengen",
+  ni4: "die Angemessenheit der Preisansätze",
+  ni5: "die Herleitung und Nachvollziehbarkeit der Mengenansätze",
+  ni6: "die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
+  ni7: "die Nachvollziehbarkeit der Nachweise / Anlagen"
 };
 
 Office.onReady(() => {
@@ -77,7 +87,7 @@ function getCheckedMapped(map) {
       let text = map[key];
 
       if (note) {
-        text += ` (Ergebnis der Stichprobe(n): ${note})`;
+        text += ` (Hinweis aus Stichprobe(n): ${note})`;
       }
 
       reasons.push(text);
@@ -87,20 +97,30 @@ function getCheckedMapped(map) {
   return reasons;
 }
 
-function buildHtmlMail(intro, reasons, closing) {
+function buildHtmlMail(intro, formalReasons, inhaltlichReasons, closing) {
   let html = "";
 
   html += '<div style="font-family:Calibri, Arial, sans-serif; font-size:11pt; line-height:1.35; color:#222222;">';
   html += '<p style="margin:0 0 12pt 0;">Sehr geehrte Damen und Herren,</p>';
   html += `<p style="margin:0 0 12pt 0;">${escapeHtml(intro)}</p>`;
-  html += '<p style="margin:0 0 12pt 0;">Die durchgeführten Stichproben ergeben nachfolgenden Prüf- bzw. Überarbeitungsbedarf (ohne Anspruch auf Vollständigkeit).</p>';
-  html += '<p style="margin:0 0 6pt 0;">Bitte prüfen Sie:</p>';
 
-  html += '<ul style="margin:0 0 12pt 24px; padding:0;">';
-  reasons.forEach((reason) => {
-    html += `<li style="margin:0 0 6pt 0;">${escapeHtml(reason)}</li>`;
-  });
-  html += '</ul>';
+  if (formalReasons.length > 0) {
+    html += '<p style="margin:0 0 6pt 0;">Bitte prüfen Sie folgende formale Aspekte (ohne Anspruch auf Vollständigkeit):</p>';
+    html += '<ul style="margin:0 0 12pt 24px; padding:0;">';
+    formalReasons.forEach((reason) => {
+      html += `<li style="margin:0 0 6pt 0;">${escapeHtml(reason)}</li>`;
+    });
+    html += '</ul>';
+  }
+
+  if (inhaltlichReasons.length > 0) {
+    html += '<p style="margin:0 0 6pt 0;">Bitte prüfen Sie folgende inhaltliche Aspekte (ohne Anspruch auf Vollständigkeit):</p>';
+    html += '<ul style="margin:0 0 12pt 24px; padding:0;">';
+    inhaltlichReasons.forEach((reason) => {
+      html += `<li style="margin:0 0 6pt 0;">${escapeHtml(reason)}</li>`;
+    });
+    html += '</ul>';
+  }
 
   html += `<p style="margin:0 0 12pt 0;">${escapeHtml(closing)}</p>`;
   html += '<p style="margin:0;">Für Rückfragen stehen wir gerne zur Verfügung.</p>';
@@ -131,26 +151,28 @@ function buildSubject() {
 }
 
 function insertRechnung() {
-  const reasons = getCheckedMapped(rechnungMap);
+  const formalReasons = getCheckedMapped(rechnungFormalMap);
+  const inhaltlichReasons = getCheckedMapped(rechnungInhaltlichMap);
 
-  if (reasons.length === 0) {
+  if (formalReasons.length === 0 && inhaltlichReasons.length === 0) {
     setStatus("Bitte mindestens einen Prüfpunkt auswählen.");
     return;
   }
 
-  const intro = "im Zuge der Plausibilitätsprüfung der eingereichten Rechnung ergeben sich Unstimmigkeiten, die einer Weitergabe an den Bauherrn und damit der Freigabe derzeit entgegenstehen.";
+  const intro = "im Zuge der Plausibilitätsprüfung der eingereichten Rechnung ergeben sich Unstimmigkeiten, die einer Weitergabe an den Bauherrn und damit einer Freigabe entgegenstehen.";
   const closing = "Bitte überarbeiten Sie Ihre Rechnungsprüfung auch über die genannten Punkte hinaus und legen Sie die Prüfung erneut vor.";
 
-  const html = buildHtmlMail(intro, reasons, closing);
+  const html = buildHtmlMail(intro, formalReasons, inhaltlichReasons, closing);
   const subject = buildSubject();
 
   insertTemplate(html, subject);
 }
 
 function insertNachtrag() {
-  const reasons = getCheckedMapped(nachtragMap);
+  const formalReasons = getCheckedMapped(nachtragFormalMap);
+  const inhaltlichReasons = getCheckedMapped(nachtragInhaltlichMap);
 
-  if (reasons.length === 0) {
+  if (formalReasons.length === 0 && inhaltlichReasons.length === 0) {
     setStatus("Bitte mindestens einen Prüfpunkt auswählen.");
     return;
   }
@@ -158,7 +180,7 @@ function insertNachtrag() {
   const intro = "im Zuge der Plausibilitätsprüfung des eingereichten Nachtrags ergeben sich Unstimmigkeiten, die einer Weitergabe an den Bauherrn und damit der Beauftragung derzeit entgegenstehen.";
   const closing = "Bitte überarbeiten Sie Ihre Nachtragsprüfung auch über die genannten Punkte hinaus und legen Sie die Prüfung erneut vor.";
 
-  const html = buildHtmlMail(intro, reasons, closing);
+  const html = buildHtmlMail(intro, formalReasons, inhaltlichReasons, closing);
   const subject = buildSubject();
 
   insertTemplate(html, subject);

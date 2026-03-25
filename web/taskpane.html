@@ -36,6 +36,13 @@
       font-size: 11pt;
     }
 
+    .subsection-title {
+      margin: 14px 0 8px 0;
+      font-weight: bold;
+      font-size: 11pt;
+      color: #444444;
+    }
+
     .option-box {
       border: 1px solid #d9d9d9;
       border-radius: 6px;
@@ -165,76 +172,105 @@
   <div id="rechnungSection">
     <div class="section-title">Prüfpunkte – Gewerkerechnung</div>
     <div class="option-box">
+
+      <div class="subsection-title">Formale Aspekte</div>
+
       <div class="checkbox-row">
-        <input type="checkbox" id="r1">
-        <label for="r1">Die Rechnungsstruktur</label>
+        <input type="checkbox" id="rf1">
+        <label for="rf1">das Vorhandensein des Prüfblattes zur Rechnungsprüfung</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="r1_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="rf1_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
 
       <div class="checkbox-row">
-        <input type="checkbox" id="r2">
-        <label for="r2">Die Vollständigkeit der Nachweise / Anlagen</label>
+        <input type="checkbox" id="rf2">
+        <label for="rf2">die kummulierte Rechnungsstellung</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="r2_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="rf2_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
 
       <div class="checkbox-row">
-        <input type="checkbox" id="r3">
-        <label for="r3">Die Nachvollziehbarkeit der Nachweise / Anlagen</label>
+        <input type="checkbox" id="rf3">
+        <label for="rf3">die korrekte Angabe des Leistungszeitraums</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="r3_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="rf3_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
 
       <div class="checkbox-row">
-        <input type="checkbox" id="r4">
-        <label for="r4">Die Einhaltung vertraglicher Rahmenbedingungen</label>
+        <input type="checkbox" id="rf4">
+        <label for="rf4">die Vollständigkeit und Richtigkeit der Prüfstempel</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="r4_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="rf4_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
 
       <div class="checkbox-row">
-        <input type="checkbox" id="r5">
-        <label for="r5">Die Übereinstimmung der Einheitspreise mit LV / Auftrag</label>
+        <input type="checkbox" id="rf5">
+        <label for="rf5">die korrekte Darstellung der bereits geleisteten Zahlungen</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="r5_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="rf5_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
 
       <div class="checkbox-row">
-        <input type="checkbox" id="r6">
-        <label for="r6">Auf Rechnungspositionen, für die kein Auftrag vorliegt</label>
+        <input type="checkbox" id="rf6">
+        <label for="rf6">die Einhaltung der vereinbarten Auftragssumme</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="r6_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="rf6_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
 
       <div class="checkbox-row">
-        <input type="checkbox" id="r7">
-        <label for="r7">Die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte</label>
+        <input type="checkbox" id="rf7">
+        <label for="rf7">die Vollständigkeit der Nachweise / Anlagen</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="r7_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="rf7_note" placeholder="Hinweis aus Stichprobe(n)">
+      </div>
+
+      <div class="subsection-title">Inhaltliche Aspekte</div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="ri1">
+        <label for="ri1">die Einhaltung vertraglicher Rahmenbedingungen</label>
+      </div>
+      <div class="sub-input">
+        <input type="text" id="ri1_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
 
       <div class="checkbox-row">
-        <input type="checkbox" id="r8">
-        <label for="r8">Die Einhaltung der vereinbarten Auftragssumme</label>
+        <input type="checkbox" id="ri2">
+        <label for="ri2">die Übereinstimmung der abgerechneten Einheitspreise mit dem Leistungsverzeichnis / Auftrag</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="r8_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="ri2_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
 
       <div class="checkbox-row">
-        <input type="checkbox" id="r9">
-        <label for="r9">Die Vollständigkeit und Richtigkeit der formalen Angaben</label>
+        <input type="checkbox" id="ri3">
+        <label for="ri3">die Abweichungen in Mengen und Massen +/- 10%, bezogen auf den vereinbarten Leistungsumfang</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="r9_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="ri3_note" placeholder="Hinweis aus Stichprobe(n)">
+      </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="ri4">
+        <label for="ri4">die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte</label>
+      </div>
+      <div class="sub-input">
+        <input type="text" id="ri4_note" placeholder="Hinweis aus Stichprobe(n)">
+      </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="ri5">
+        <label for="ri5">die Nachvollziehbarkeit der Nachweise / Anlagen</label>
+      </div>
+      <div class="sub-input">
+        <input type="text" id="ri5_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
     </div>
   </div>
@@ -242,76 +278,89 @@
   <div id="nachtragSection" class="hidden">
     <div class="section-title">Prüfpunkte – Gewerkenachtrag</div>
     <div class="option-box">
+
+      <div class="subsection-title">Formale Aspekte</div>
+
       <div class="checkbox-row">
-        <input type="checkbox" id="n1">
-        <label for="n1">Die Vollständigkeit der Nachweise / Anlagen</label>
+        <input type="checkbox" id="nf1">
+        <label for="nf1">das Vorhandensein des Prüfblattes zur Nachtragsprüfung</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="n1_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="nf1_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
 
       <div class="checkbox-row">
-        <input type="checkbox" id="n2">
-        <label for="n2">Die Nachvollziehbarkeit der Nachweise / Anlagen</label>
+        <input type="checkbox" id="nf2">
+        <label for="nf2">die Vollständigkeit und Richtigkeit der Prüfstempel</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="n2_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="nf2_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
 
       <div class="checkbox-row">
-        <input type="checkbox" id="n3">
-        <label for="n3">Die Übereinstimmung der Einheitspreise mit vertraglichen Vereinbarungen</label>
+        <input type="checkbox" id="nf3">
+        <label for="nf3">die Vollständigkeit der Nachweise / Anlagen</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="n3_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="nf3_note" placeholder="Hinweis aus Stichprobe(n)">
+      </div>
+
+      <div class="subsection-title">Inhaltliche Aspekte</div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="ni1">
+        <label for="ni1">die Nachvollziehbarkeit der Nachtragsbegründung</label>
+      </div>
+      <div class="sub-input">
+        <input type="text" id="ni1_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
 
       <div class="checkbox-row">
-        <input type="checkbox" id="n4">
-        <label for="n4">Die Angemessenheit der Preisansätze</label>
+        <input type="checkbox" id="ni2">
+        <label for="ni2">die Leistungen, die bereits vom bestehenden Auftrag umfasst sind</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="n4_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="ni2_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
 
       <div class="checkbox-row">
-        <input type="checkbox" id="n5">
-        <label for="n5">Die Nachvollziehbarkeit der Nachtragsbegründung</label>
+        <input type="checkbox" id="ni3">
+        <label for="ni3">die Übereinstimmung der angesetzten Einheitspreise mit den vertraglichen Vereinbarungen bei Mehrmengen</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="n5_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="ni3_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
 
       <div class="checkbox-row">
-        <input type="checkbox" id="n6">
-        <label for="n6">Auf Leistungen, die bereits vom bestehenden Auftrag umfasst sind</label>
+        <input type="checkbox" id="ni4">
+        <label for="ni4">die Angemessenheit der Preisansätze</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="n6_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="ni4_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
 
       <div class="checkbox-row">
-        <input type="checkbox" id="n7">
-        <label for="n7">Die Herleitung und Nachvollziehbarkeit der Mengenansätze</label>
+        <input type="checkbox" id="ni5">
+        <label for="ni5">die Herleitung und Nachvollziehbarkeit der Mengenansätze</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="n7_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="ni5_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
 
       <div class="checkbox-row">
-        <input type="checkbox" id="n8">
-        <label for="n8">Die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte</label>
+        <input type="checkbox" id="ni6">
+        <label for="ni6">die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="n8_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="ni6_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
 
       <div class="checkbox-row">
-        <input type="checkbox" id="n9">
-        <label for="n9">Die Vollständigkeit und Richtigkeit der formalen Angaben</label>
+        <input type="checkbox" id="ni7">
+        <label for="ni7">die Nachvollziehbarkeit der Nachweise / Anlagen</label>
       </div>
       <div class="sub-input">
-        <input type="text" id="n9_note" placeholder="Ergebnis der Stichprobe(n)">
+        <input type="text" id="ni7_note" placeholder="Hinweis aus Stichprobe(n)">
       </div>
     </div>
   </div>
