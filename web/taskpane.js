@@ -36,6 +36,9 @@ const nachtragInhaltlichMap = {
   ni8: "die Nachvollziehbarkeit der Nachweise / Anlagen"
 };
 
+const SR_START_MARKER = "SR_STANDARDS_BLOCK_START";
+const SR_END_MARKER = "SR_STANDARDS_BLOCK_END";
+
 Office.onReady(() => {
   const typeRechnung = document.getElementById("typeRechnung");
   const typeNachtrag = document.getElementById("typeNachtrag");
@@ -99,9 +102,14 @@ function getCheckedMapped(map) {
   return reasons;
 }
 
+function buildHiddenMarker(markerText) {
+  return `<span style="display:none;mso-hide:all;font-size:1px;line-height:1px;color:#ffffff;">${markerText}</span>`;
+}
+
 function buildHtmlMail(intro, formalReasons, inhaltlichReasons, closing) {
   let html = "";
 
+  html += buildHiddenMarker(SR_START_MARKER);
   html += '<div data-sr-standards="block" style="font-family:Calibri, Arial, sans-serif; font-size:11pt; line-height:1.35; color:#222222;">';
   html += '<p style="margin:0 0 12pt 0;">Sehr geehrte Damen und Herren,</p>';
   html += `<p style="margin:0 0 12pt 0;">${escapeHtml(intro)}</p>`;
@@ -127,6 +135,7 @@ function buildHtmlMail(intro, formalReasons, inhaltlichReasons, closing) {
   html += `<p style="margin:0 0 12pt 0;">${escapeHtml(closing)}</p>`;
   html += '<p style="margin:0;">Für Rückfragen stehen wir gerne zur Verfügung.</p>';
   html += '</div>';
+  html += buildHiddenMarker(SR_END_MARKER);
 
   return html;
 }
@@ -189,7 +198,13 @@ function insertNachtrag() {
 }
 
 function replaceSrBlockInHtml(bodyHtml, blockHtml) {
-  const markerRegex = /<div\b[^>]*data-sr-standards=["']block["'][^>]*>[\s\S]*?<\/div>/i;
+  const escapedStart = SR_START_MARKER.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const escapedEnd = SR_END_MARKER.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+  const markerRegex = new RegExp(
+    `${escapedStart}[\\s\\S]*?${escapedEnd}`,
+    "i"
+  );
 
   if (markerRegex.test(bodyHtml)) {
     return bodyHtml.replace(markerRegex, blockHtml);
