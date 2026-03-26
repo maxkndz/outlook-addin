@@ -102,7 +102,7 @@ function getCheckedMapped(map) {
 function buildHtmlMail(intro, formalReasons, inhaltlichReasons, closing) {
   let html = "";
 
-  html += '<div style="font-family:Calibri, Arial, sans-serif; font-size:11pt; line-height:1.35; color:#222222;">';
+  html += '<div data-sr-standards="block" style="font-family:Calibri, Arial, sans-serif; font-size:11pt; line-height:1.35; color:#222222;">';
   html += '<p style="margin:0 0 12pt 0;">Sehr geehrte Damen und Herren,</p>';
   html += `<p style="margin:0 0 12pt 0;">${escapeHtml(intro)}</p>`;
 
@@ -188,6 +188,16 @@ function insertNachtrag() {
   insertTemplate(html, subject);
 }
 
+function replaceSrBlockInHtml(bodyHtml, blockHtml) {
+  const markerRegex = /<div\b[^>]*data-sr-standards=["']block["'][^>]*>[\s\S]*?<\/div>/i;
+
+  if (markerRegex.test(bodyHtml)) {
+    return bodyHtml.replace(markerRegex, blockHtml);
+  }
+
+  return blockHtml + bodyHtml;
+}
+
 function insertTemplate(htmlTemplate, subjectText) {
   const item = Office.context.mailbox.item;
 
@@ -196,26 +206,36 @@ function insertTemplate(htmlTemplate, subjectText) {
     return;
   }
 
-  item.body.prependAsync(
-    htmlTemplate,
-    { coercionType: Office.CoercionType.Html },
-    (bodyResult) => {
-      if (bodyResult.status !== Office.AsyncResultStatus.Succeeded) {
-        setStatus("Fehler beim Einfügen des Textes.");
-        return;
-      }
-
-      if (subjectText && item.subject) {
-        item.subject.setAsync(subjectText, (subjectResult) => {
-          if (subjectResult.status === Office.AsyncResultStatus.Succeeded) {
-            setStatus("Text eingefügt und Betreff gesetzt.");
-          } else {
-            setStatus("Text eingefügt. Betreff konnte nicht gesetzt werden.");
-          }
-        });
-      } else {
-        setStatus("Text eingefügt.");
-      }
+  item.body.getAsync(Office.CoercionType.Html, (getResult) => {
+    if (getResult.status !== Office.AsyncResultStatus.Succeeded) {
+      setStatus("Fehler beim Auslesen des E-Mail-Textes.");
+      return;
     }
-  );
+
+    const currentHtml = getResult.value || "";
+    const updatedHtml = replaceSrBlockInHtml(currentHtml, htmlTemplate);
+
+    item.body.setAsync(
+      updatedHtml,
+      { coercionType: Office.CoercionType.Html },
+      (setResult) => {
+        if (setResult.status !== Office.AsyncResultStatus.Succeeded) {
+          setStatus("Fehler beim Aktualisieren des Textes.");
+          return;
+        }
+
+        if (subjectText && item.subject) {
+          item.subject.setAsync(subjectText, (subjectResult) => {
+            if (subjectResult.status === Office.AsyncResultStatus.Succeeded) {
+              setStatus("Text aktualisiert und Betreff gesetzt.");
+            } else {
+              setStatus("Text aktualisiert. Betreff konnte nicht gesetzt werden.");
+            }
+          });
+        } else {
+          setStatus("Text aktualisiert.");
+        }
+      }
+    );
+  });
 }
