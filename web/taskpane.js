@@ -213,6 +213,22 @@ function replaceSrBlockInHtml(bodyHtml, blockHtml) {
   return blockHtml + bodyHtml;
 }
 
+function trimTrailingEmptyHtml(html) {
+  let cleaned = html;
+  let previous;
+
+  do {
+    previous = cleaned;
+
+    cleaned = cleaned
+      .replace(/(?:\s|&nbsp;|<br\s*\/?>|<o:p>\s*<\/o:p>)+$/i, "")
+      .replace(/<p\b[^>]*>(?:\s|&nbsp;|<br\s*\/?>|<o:p>\s*<\/o:p>)*<\/p>\s*$/i, "")
+      .replace(/<div\b[^>]*>(?:\s|&nbsp;|<br\s*\/?>|<o:p>\s*<\/o:p>)*<\/div>\s*$/i, "");
+  } while (cleaned !== previous);
+
+  return cleaned;
+}
+
 function insertTemplate(htmlTemplate, subjectText) {
   const item = Office.context.mailbox.item;
 
@@ -228,7 +244,8 @@ function insertTemplate(htmlTemplate, subjectText) {
     }
 
     const currentHtml = getResult.value || "";
-    const updatedHtml = replaceSrBlockInHtml(currentHtml, htmlTemplate);
+    let updatedHtml = replaceSrBlockInHtml(currentHtml, htmlTemplate);
+    updatedHtml = trimTrailingEmptyHtml(updatedHtml);
 
     item.body.setAsync(
       updatedHtml,
