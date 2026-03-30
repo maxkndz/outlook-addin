@@ -14,7 +14,7 @@ const rechnungInhaltlichMap = {
   ri1: "die Vollständigkeit und Richtigkeit des Prüfblattes zur Rechnungsprüfung",
   ri2: "die Einhaltung vertraglicher Rahmenbedingungen",
   ri3: "die Übereinstimmung der abgerechneten Einheitspreise mit dem Leistungsverzeichnis / Auftrag",
-  ri4: "die Abweichungen in Mengen und Massen (max. + 10%), bezogen auf den vereinbarten Leistungsumfang",
+  ri4: "die Abweichungen der abgerechneten Mengen im Vergleich zum vereinbarten Leistungsumfang",
   ri5: "die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
   ri6: "die Nachvollziehbarkeit der Nachweise / Anlagen"
 };
