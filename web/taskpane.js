@@ -37,6 +37,8 @@ const nachtragInhaltlichMap = {
 };
 
 const SR_BLOCK_ID = "srStandardsBlock";
+const SR_START_MARKER = "SR_STANDARDS_BLOCK_START";
+const SR_END_MARKER = "SR_STANDARDS_BLOCK_END";
 
 Office.onReady(() => {
   const typeRechnung = document.getElementById("typeRechnung");
@@ -101,10 +103,15 @@ function getCheckedMapped(map) {
   return reasons;
 }
 
+function buildHiddenMarker(markerText) {
+  return `<span style="display:none;mso-hide:all;font-size:1px;line-height:1px;color:#ffffff;">${markerText}</span>`;
+}
+
 function buildHtmlMail(intro, formalReasons, inhaltlichReasons, closing) {
   let html = "";
 
-  html += `<table id="${SR_BLOCK_ID}" role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse; width:100%; font-family:Calibri, Arial, sans-serif; font-size:11pt; line-height:1.35; color:#222222;">`;
+  html += buildHiddenMarker(SR_START_MARKER);
+  html += `<table id="${SR_BLOCK_ID}" role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" data-sr-standards="block" style="border-collapse:collapse; width:100%; font-family:Calibri, Arial, sans-serif; font-size:11pt; line-height:1.35; color:#222222;">`;
   html += "<tr><td style=\"padding:0; margin:0;\">";
 
   html += '<p style="margin:0 0 12pt 0;">Sehr geehrte Damen und Herren,</p>';
@@ -132,6 +139,7 @@ function buildHtmlMail(intro, formalReasons, inhaltlichReasons, closing) {
   html += '<p style="margin:0;">Für Rückfragen stehen wir gerne zur Verfügung.</p>';
 
   html += "</td></tr></table>";
+  html += buildHiddenMarker(SR_END_MARKER);
 
   return html;
 }
@@ -194,6 +202,7 @@ function insertNachtrag() {
 }
 
 function replaceSrBlockInHtml(bodyHtml, blockHtml) {
+  // 1) Beste Chance für klassisches Outlook: Tabelle mit ID
   const tableRegex = new RegExp(
     `<table\\b[^>]*id=["']${SR_BLOCK_ID}["'][\\s\\S]*?<\\/table>`,
     "i"
@@ -203,7 +212,28 @@ function replaceSrBlockInHtml(bodyHtml, blockHtml) {
     return bodyHtml.replace(tableRegex, blockHtml);
   }
 
-  return blockHtml + bodyHtml;
+  // 2) Zweite Chance: unsichtbare Marker
+  const escapedStart = SR_START_MARKER.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const escapedEnd = SR_END_MARKER.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+  const markerRegex = new RegExp(
+    `${escapedStart}[\\s\\S]*?${escapedEnd}`,
+    "i"
+  );
+
+  if (markerRegex.test(bodyHtml)) {
+    return bodyHtml.replace(markerRegex, blockHtml);
+  }
+
+  // 3) Dritte Chance: data-Attribut am Block
+  const dataRegex = /<table\b[^>]*data-sr-standards=["']block["'][\s\S]*?<\/table>/i;
+
+  if (dataRegex.test(bodyHtml)) {
+    return bodyHtml.replace(dataRegex, blockHtml);
+  }
+
+  // 4) Fallback: neu oben einfügen
+  return blockHtml + "<br>" + bodyHtml;
 }
 
 function trimTrailingEmptyHtml(html) {
