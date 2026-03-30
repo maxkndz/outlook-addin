@@ -36,8 +36,7 @@ const nachtragInhaltlichMap = {
   ni8: "die Nachvollziehbarkeit der Nachweise / Anlagen"
 };
 
-const SR_START_MARKER = "SR_STANDARDS_BLOCK_START";
-const SR_END_MARKER = "SR_STANDARDS_BLOCK_END";
+const SR_BLOCK_ID = "srStandardsBlock";
 
 Office.onReady(() => {
   const typeRechnung = document.getElementById("typeRechnung");
@@ -102,15 +101,12 @@ function getCheckedMapped(map) {
   return reasons;
 }
 
-function buildHiddenMarker(markerText) {
-  return `<span style="display:none;mso-hide:all;font-size:1px;line-height:1px;color:#ffffff;">${markerText}</span>`;
-}
-
 function buildHtmlMail(intro, formalReasons, inhaltlichReasons, closing) {
   let html = "";
 
-  html += buildHiddenMarker(SR_START_MARKER);
-  html += '<div data-sr-standards="block" style="font-family:Calibri, Arial, sans-serif; font-size:11pt; line-height:1.35; color:#222222;">';
+  html += `<table id="${SR_BLOCK_ID}" role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse; width:100%; font-family:Calibri, Arial, sans-serif; font-size:11pt; line-height:1.35; color:#222222;">`;
+  html += "<tr><td style=\"padding:0; margin:0;\">";
+
   html += '<p style="margin:0 0 12pt 0;">Sehr geehrte Damen und Herren,</p>';
   html += `<p style="margin:0 0 12pt 0;">${escapeHtml(intro)}</p>`;
 
@@ -120,7 +116,7 @@ function buildHtmlMail(intro, formalReasons, inhaltlichReasons, closing) {
     formalReasons.forEach((reason) => {
       html += `<li style="margin:0 0 6pt 0;">${escapeHtml(reason)}</li>`;
     });
-    html += '</ul>';
+    html += "</ul>";
   }
 
   if (inhaltlichReasons.length > 0) {
@@ -129,13 +125,13 @@ function buildHtmlMail(intro, formalReasons, inhaltlichReasons, closing) {
     inhaltlichReasons.forEach((reason) => {
       html += `<li style="margin:0 0 6pt 0;">${escapeHtml(reason)}</li>`;
     });
-    html += '</ul>';
+    html += "</ul>";
   }
 
   html += `<p style="margin:0 0 12pt 0;">${escapeHtml(closing)}</p>`;
   html += '<p style="margin:0;">Für Rückfragen stehen wir gerne zur Verfügung.</p>';
-  html += '</div>';
-  html += buildHiddenMarker(SR_END_MARKER);
+
+  html += "</td></tr></table>";
 
   return html;
 }
@@ -198,21 +194,16 @@ function insertNachtrag() {
 }
 
 function replaceSrBlockInHtml(bodyHtml, blockHtml) {
-  const escapedStart = SR_START_MARKER.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const escapedEnd = SR_END_MARKER.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-  const markerRegex = new RegExp(
-    `${escapedStart}[\\s\\S]*?${escapedEnd}`,
+  const tableRegex = new RegExp(
+    `<table\\b[^>]*id=["']${SR_BLOCK_ID}["'][\\s\\S]*?<\\/table>`,
     "i"
   );
 
-  if (markerRegex.test(bodyHtml)) {
-    return bodyHtml.replace(markerRegex, blockHtml);
+  if (tableRegex.test(bodyHtml)) {
+    return bodyHtml.replace(tableRegex, blockHtml);
   }
 
-  // Fallback für altes Outlook:
-  // Wenn Marker nicht gefunden werden, nichts löschen, sondern neu oben einfügen.
-  return blockHtml + "<br>" + bodyHtml;
+  return blockHtml + bodyHtml;
 }
 
 function trimTrailingEmptyHtml(html) {
@@ -225,7 +216,8 @@ function trimTrailingEmptyHtml(html) {
     cleaned = cleaned
       .replace(/(?:\s|&nbsp;|<br\s*\/?>|<o:p>\s*<\/o:p>)+$/i, "")
       .replace(/<p\b[^>]*>(?:\s|&nbsp;|<br\s*\/?>|<o:p>\s*<\/o:p>)*<\/p>\s*$/i, "")
-      .replace(/<div\b[^>]*>(?:\s|&nbsp;|<br\s*\/?>|<o:p>\s*<\/o:p>)*<\/div>\s*$/i, "");
+      .replace(/<div\b[^>]*>(?:\s|&nbsp;|<br\s*\/?>|<o:p>\s*<\/o:p>)*<\/div>\s*$/i, "")
+      .replace(/<table\b[^>]*>(?:\s|&nbsp;|<br\s*\/?>|<o:p>\s*<\/o:p>|<tbody>|<\/tbody>|<tr>|<\/tr>|<td\b[^>]*>|<\/td>)*<\/table>\s*$/i, "");
   } while (cleaned !== previous);
 
   return cleaned;
