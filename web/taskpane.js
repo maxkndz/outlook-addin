@@ -14,7 +14,7 @@ const rechnungInhaltlichMap = {
   ri1: "die Vollständigkeit und Richtigkeit des Prüfblattes zur Rechnungsprüfung",
   ri2: "die Einhaltung vertraglicher Rahmenbedingungen",
   ri3: "die Übereinstimmung der abgerechneten Einheitspreise mit dem Leistungsverzeichnis / Auftrag",
-  ri4: "die Abweichungen der abgerechneten Mengen (+/- 10 %) im Vergleich zum vereinbarten Leistungsumfang",
+  ri4: "die Abweichungen in Mengen und Massen (max. + 10%), bezogen auf den vereinbarten Leistungsumfang",
   ri5: "die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
   ri6: "die Nachvollziehbarkeit der Nachweise / Anlagen"
 };
@@ -35,10 +35,6 @@ const nachtragInhaltlichMap = {
   ni7: "die rechnerische Richtigkeit sowie die korrekte Übertragung der Werte",
   ni8: "die Nachvollziehbarkeit der Nachweise / Anlagen"
 };
-
-const SR_BLOCK_ID = "srStandardsBlock";
-const SR_START_MARKER = "SR_STANDARDS_BLOCK_START";
-const SR_END_MARKER = "SR_STANDARDS_BLOCK_END";
 
 Office.onReady(() => {
   const typeRechnung = document.getElementById("typeRechnung");
@@ -103,17 +99,10 @@ function getCheckedMapped(map) {
   return reasons;
 }
 
-function buildHiddenMarker(markerText) {
-  return `<span style="display:none;mso-hide:all;font-size:1px;line-height:1px;color:#ffffff;">${markerText}</span>`;
-}
-
 function buildHtmlMail(intro, formalReasons, inhaltlichReasons, closing) {
   let html = "";
 
-  html += buildHiddenMarker(SR_START_MARKER);
-  html += `<table id="${SR_BLOCK_ID}" role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" data-sr-standards="block" style="border-collapse:collapse; width:100%; font-family:Calibri, Arial, sans-serif; font-size:11pt; line-height:1.35; color:#222222;">`;
-  html += "<tr><td style=\"padding:0; margin:0;\">";
-
+  html += '<div style="font-family:Calibri, Arial, sans-serif; font-size:11pt; line-height:1.35; color:#222222;">';
   html += '<p style="margin:0 0 12pt 0;">Sehr geehrte Damen und Herren,</p>';
   html += `<p style="margin:0 0 12pt 0;">${escapeHtml(intro)}</p>`;
 
@@ -123,7 +112,7 @@ function buildHtmlMail(intro, formalReasons, inhaltlichReasons, closing) {
     formalReasons.forEach((reason) => {
       html += `<li style="margin:0 0 6pt 0;">${escapeHtml(reason)}</li>`;
     });
-    html += "</ul>";
+    html += '</ul>';
   }
 
   if (inhaltlichReasons.length > 0) {
@@ -132,14 +121,12 @@ function buildHtmlMail(intro, formalReasons, inhaltlichReasons, closing) {
     inhaltlichReasons.forEach((reason) => {
       html += `<li style="margin:0 0 6pt 0;">${escapeHtml(reason)}</li>`;
     });
-    html += "</ul>";
+    html += '</ul>';
   }
 
   html += `<p style="margin:0 0 12pt 0;">${escapeHtml(closing)}</p>`;
   html += '<p style="margin:0;">Für Rückfragen stehen wir gerne zur Verfügung.</p>';
-
-  html += "</td></tr></table>";
-  html += buildHiddenMarker(SR_END_MARKER);
+  html += '</div>';
 
   return html;
 }
@@ -201,58 +188,6 @@ function insertNachtrag() {
   insertTemplate(html, subject);
 }
 
-function replaceSrBlockInHtml(bodyHtml, blockHtml) {
-  // 1) Beste Chance für klassisches Outlook: Tabelle mit ID
-  const tableRegex = new RegExp(
-    `<table\\b[^>]*id=["']${SR_BLOCK_ID}["'][\\s\\S]*?<\\/table>`,
-    "i"
-  );
-
-  if (tableRegex.test(bodyHtml)) {
-    return bodyHtml.replace(tableRegex, blockHtml);
-  }
-
-  // 2) Zweite Chance: unsichtbare Marker
-  const escapedStart = SR_START_MARKER.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const escapedEnd = SR_END_MARKER.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-  const markerRegex = new RegExp(
-    `${escapedStart}[\\s\\S]*?${escapedEnd}`,
-    "i"
-  );
-
-  if (markerRegex.test(bodyHtml)) {
-    return bodyHtml.replace(markerRegex, blockHtml);
-  }
-
-  // 3) Dritte Chance: data-Attribut am Block
-  const dataRegex = /<table\b[^>]*data-sr-standards=["']block["'][\s\S]*?<\/table>/i;
-
-  if (dataRegex.test(bodyHtml)) {
-    return bodyHtml.replace(dataRegex, blockHtml);
-  }
-
-  // 4) Fallback: neu oben einfügen
-  return blockHtml + "<br>" + bodyHtml;
-}
-
-function trimTrailingEmptyHtml(html) {
-  let cleaned = html;
-  let previous;
-
-  do {
-    previous = cleaned;
-
-    cleaned = cleaned
-      .replace(/(?:\s|&nbsp;|<br\s*\/?>|<o:p>\s*<\/o:p>)+$/i, "")
-      .replace(/<p\b[^>]*>(?:\s|&nbsp;|<br\s*\/?>|<o:p>\s*<\/o:p>)*<\/p>\s*$/i, "")
-      .replace(/<div\b[^>]*>(?:\s|&nbsp;|<br\s*\/?>|<o:p>\s*<\/o:p>)*<\/div>\s*$/i, "")
-      .replace(/<table\b[^>]*>(?:\s|&nbsp;|<br\s*\/?>|<o:p>\s*<\/o:p>|<tbody>|<\/tbody>|<tr>|<\/tr>|<td\b[^>]*>|<\/td>)*<\/table>\s*$/i, "");
-  } while (cleaned !== previous);
-
-  return cleaned;
-}
-
 function insertTemplate(htmlTemplate, subjectText) {
   const item = Office.context.mailbox.item;
 
@@ -261,37 +196,26 @@ function insertTemplate(htmlTemplate, subjectText) {
     return;
   }
 
-  item.body.getAsync(Office.CoercionType.Html, (getResult) => {
-    if (getResult.status !== Office.AsyncResultStatus.Succeeded) {
-      setStatus("Fehler beim Auslesen des E-Mail-Textes.");
-      return;
-    }
-
-    const currentHtml = getResult.value || "";
-    let updatedHtml = replaceSrBlockInHtml(currentHtml, htmlTemplate);
-    updatedHtml = trimTrailingEmptyHtml(updatedHtml);
-
-    item.body.setAsync(
-      updatedHtml,
-      { coercionType: Office.CoercionType.Html },
-      (setResult) => {
-        if (setResult.status !== Office.AsyncResultStatus.Succeeded) {
-          setStatus("Fehler beim Aktualisieren des Textes.");
-          return;
-        }
-
-        if (subjectText && item.subject) {
-          item.subject.setAsync(subjectText, (subjectResult) => {
-            if (subjectResult.status === Office.AsyncResultStatus.Succeeded) {
-              setStatus("Text aktualisiert und Betreff gesetzt.");
-            } else {
-              setStatus("Text aktualisiert. Betreff konnte nicht gesetzt werden.");
-            }
-          });
-        } else {
-          setStatus("Text aktualisiert.");
-        }
+  item.body.prependAsync(
+    htmlTemplate,
+    { coercionType: Office.CoercionType.Html },
+    (bodyResult) => {
+      if (bodyResult.status !== Office.AsyncResultStatus.Succeeded) {
+        setStatus("Fehler beim Einfügen des Textes.");
+        return;
       }
-    );
-  });
+
+      if (subjectText && item.subject) {
+        item.subject.setAsync(subjectText, (subjectResult) => {
+          if (subjectResult.status === Office.AsyncResultStatus.Succeeded) {
+            setStatus("Text eingefügt und Betreff gesetzt.");
+          } else {
+            setStatus("Text eingefügt. Betreff konnte nicht gesetzt werden.");
+          }
+        });
+      } else {
+        setStatus("Text eingefügt.");
+      }
+    }
+  );
 }
